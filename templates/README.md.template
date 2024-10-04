@@ -1,8 +1,30 @@
-# PROJECT_NAME
+# My C Project
 
-简要描述你的项目。
+This is a C project created using the project template.
 
-## 构建
+## Structure
+
+- `src/`: Source files
+- `tests/`: Test files
+- `bin/`: Compiled binaries
+- `obj/`: Object files
+
+## Build Instructions
+
+To build the project:
 
 ```bash
-make
+make build
+```
+
+To run the project:
+
+```bash
+make run
+```
+
+To run tests:
+
+```bash
+make test
+```

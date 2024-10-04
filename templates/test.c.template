@@ -1,0 +1,78 @@
+#include <CUnit/CUnit.h>
+#include <CUnit/Basic.h>
+#include "../include/fibonacci.h" // 包含 Fibonacci 函数的头文件
+
+/**
+ * 这是一个测试模板文件，您可以通过本文件了解如何使用 CUnit 框架进行单元测试。
+ *
+ * 要测试其他功能代码，请按照以下步骤操作：
+ * 1. 在 `include/` 文件夹中添加一个新的头文件，该文件应声明你要测试的函数，如`fibonacci.h`。
+ * 2. 在 `src/` 文件夹中编写你的功能代码实现，如`fibonacci.c`。
+ * 3. 在 `tests/test.c` 中引入你需要测试的头文件，如`#include "../include/fibonacci.h" `。
+ * 4. 在 `tests/test.c` 中为每个函数编写相应的测试函数，如`void test_fibonacci_recursive(void){}`。
+ * 5. 在 `tests/test.c：main()` 函数中，使用 `CU_add_test` 将你的测试函数添加到测试套件中。
+ *
+ * 本模板以 Fibonacci 函数为例，演示了如何编写测试。你可以参考本文件并添加你自己的测试代码。
+ */
+
+/* 测试 Fibonacci 递归实现 */
+void test_fibonacci_recursive(void)
+{
+    CU_ASSERT(fibonacci_recursive(0) == 0);
+    CU_ASSERT(fibonacci_recursive(1) == 1);
+    CU_ASSERT(fibonacci_recursive(2) == 1);
+    CU_ASSERT(fibonacci_recursive(10) == 55); // 测试 Fibonacci(10)
+}
+
+/* 测试 Fibonacci 迭代实现 */
+void test_fibonacci_iterative(void)
+{
+    CU_ASSERT(fibonacci_iterative(0) == 0);
+    CU_ASSERT(fibonacci_iterative(1) == 1);
+    CU_ASSERT(fibonacci_iterative(2) == 1);
+    CU_ASSERT(fibonacci_iterative(10) == 55); // 测试 Fibonacci(10)
+}
+
+/* 初始化测试套件：测试前初始化 */
+int init_suite(void) { return 0; }
+
+/* 清理测试套件：测试后清理 */
+int clean_suite(void) { return 0; }
+
+/**
+ * main 函数：设置测试套件并运行测试
+ *
+ * 1. 使用 `CU_initialize_registry()` 初始化 CUnit 注册表。
+ * 2. 创建一个测试套件 `CU_add_suite()`。
+ * 3. 为每个测试函数使用 `CU_add_test()` 进行注册。
+ * 4. 使用 `CU_basic_run_tests()` 运行所有已注册的测试。
+ * 5. 最后清理 CUnit 注册表。
+ *
+ * - 你只需要修改 `CU_add_test` 中的测试函数名称，或删除部分/添加更多。
+ */
+int main()
+{
+    /* 初始化注册表 */
+    if (CU_initialize_registry() != CUE_SUCCESS)
+        return CU_get_error();
+
+    /* 添加一个测试套件 */
+    CU_pSuite pSuite = CU_add_suite("Test_Suite", init_suite, clean_suite);
+    if (NULL == pSuite)
+    {
+        CU_cleanup_registry();
+        return CU_get_error();
+    }
+
+    /* 注册测试函数，只需要修改这部分，修改测试函数名称`test_fibonacci_recursive`，或删除添加更多 */
+    CU_add_test(pSuite, "test_fibonacci_recursive", test_fibonacci_recursive);
+    CU_add_test(pSuite, "test_fibonacci_iterative", test_fibonacci_iterative);
+
+    /* 设置模式并运行测试 */
+    CU_basic_set_mode(CU_BRM_VERBOSE);
+    CU_basic_run_tests();
+
+    /* 清理注册表 */
+    CU_cleanup_registry();
+    return CU_get_error();
+}

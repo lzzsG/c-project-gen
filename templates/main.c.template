@@ -1,6 +1,12 @@
 #include <stdio.h>
+#include "fibonacci.h" // 包含 Fibonacci 函数的头文件
 
-int main() {
-    printf("Hello, World!\n");
+int main()
+{
+    int n = 10;
+    printf("Running template file...\n");
+    printf("Fibonacci of %d (recursive): %d\n", n, fibonacci_recursive(n));
+    printf("Fibonacci of %d (iterative): %d\n", n, fibonacci_iterative(n));
+    printf("\nHello, World!\n");
     return 0;
 }

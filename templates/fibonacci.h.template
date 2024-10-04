@@ -1,0 +1,10 @@
+#ifndef FIBONACCI_H
+#define FIBONACCI_H
+
+/* Fibonacci 函数的递归实现 */
+int fibonacci_recursive(int n);
+
+/* Fibonacci 函数的迭代实现 */
+int fibonacci_iterative(int n);
+
+#endif /* FIBONACCI_H */

@@ -5,11 +5,6 @@
 help:
 	@echo "Usage:"
 	@echo "  make new PROJECT=new_project_name  # 创建一个包含模板文件的 C 项目"
-	@echo "  make build                        # 编译项目"
-	@echo "  make run                          # 编译并运行项目"
-	@echo "  make test                         # 运行测试"
-	@echo "  make clean                        # 清理生成的文件"
-	@echo "  make check                        # 只检查语法"
 
 # 创建新项目的目标
 .PHONY: new
@@ -22,29 +17,10 @@ new:
 	@mkdir -p $(PROJECT)/src $(PROJECT)/include $(PROJECT)/tests $(PROJECT)/bin $(PROJECT)/obj
 	@cp templates/Makefile.template $(PROJECT)/Makefile
 	@cp templates/main.c.template $(PROJECT)/src/main.c
+	@cp templates/test.c.template $(PROJECT)/tests/test.c
+	@cp templates/fibonacci.h.template $(PROJECT)/include/fibonacci.h
+	@cp templates/fibonacci.c.template $(PROJECT)/src/fibonacci.c
 	@cp templates/README.md.template $(PROJECT)/README.md
-	@cp templates/user_test_functions.h.template $(PROJECT)/tests/user_test_functions.h
-	@cp templates/test_template.c.template $(PROJECT)/tests/test_fibonacci.c
-	@echo "Creating .gitignore"
 	@cp templates/gitignore.template $(PROJECT)/.gitignore
 	@cd $(PROJECT) && git init
 	@echo "Project $(PROJECT) created successfully."
-
-# 模板Makefile生成
-Makefile.template:
-	@echo "Generating Makefile template..."
-	@echo "# 通用 Makefile" > Makefile.template
-	@echo "CC=gcc" >> Makefile.template
-	@echo "CFLAGS=-Wall -Wextra -O2" >> Makefile.template
-	@echo "SRC_DIR=src" >> Makefile.template
-	@echo "OBJ_DIR=obj" >> Makefile.template
-	@echo "BIN_DIR=bin" >> Makefile.template
-	@echo 'SRCS=$(wildcard $(SRC_DIR)/*.c)' >> Makefile.template
-	@echo 'OBJS=$(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))' >> Makefile.template
-	@echo '$(BIN_DIR)/$(PROJECT): $(OBJS)' >> Makefile.template
-	@echo '	$(CC) $(CFLAGS) $(OBJS) -o $@' >> Makefile.template
-	@echo '$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c' >> Makefile.template
-	@echo '	$(CC) $(CFLAGS) -c $< -o $@' >> Makefile.template
-	@echo "clean:" >> Makefile.template
-	@echo "	rm -rf $(OBJ_DIR) $(BIN_DIR)"
-
