@@ -1,6 +1,6 @@
 # C 项目模板生成器
 
-[English](# C Project Template Generator)
+[English](#c-project-template-generator)
 
 该项目提供了一个用于生成 C 项目的模板，支持使用 **CUnit** 进行单元测试。它能够自动设置基本的 C 项目结构，包含源文件、头文件、单元测试和用于构建、测试、调试的 `Makefile`。
 
