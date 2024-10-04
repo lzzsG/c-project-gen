@@ -59,6 +59,12 @@ my_project/
 
 项目附带了一个 `Makefile`，用于自动化处理构建、测试和调试流程。以下是常用的命令说明。
 
+使用以下命令查看帮助：
+
+```bash
+make help
+```
+
 ### 构建主程序
 
 使用以下命令构建主程序：
@@ -76,6 +82,16 @@ make build
 ```bash
 make run
 ```
+
+使用 `make check` 可以快速检查代码语法错误，而不执行实际的编译或链接。
+
+在不生成目标文件的情况下，只检查源代码的语法错误，可以使用：
+
+```bash
+make check
+```
+
+此命令不会编译项目，只会进行语法检查，确保代码没有明显的语法错误。
 
 ### 构建并运行测试
 
@@ -268,11 +284,11 @@ make clean
 
 10. **清理项目**：
 
-   - 使用 `make clean` 清理项目生成的文件：
+- 使用 `make clean` 清理项目生成的文件：
 
-     ```bash
-     make clean
-     ```
+  ```bash
+  make clean
+  ```
 
 ## 许可证
 
@@ -340,7 +356,6 @@ To get started, you need to install the following tools:
 ## Building the Project
 
 The project comes with a `Makefile` that automates the build, test, and debugging processes. Below are the commands to perform various actions.
-
 
 ### Build Main Program
 
@@ -560,4 +575,3 @@ This will remove the `bin/` and `obj/` directories, clearing out all compiled fi
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-

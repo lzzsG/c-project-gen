@@ -69,6 +69,17 @@ new_project_name/
 3. **阅读内层 README 文件**：
    新生成项目的 `README.md` 文件包含了关于项目的详细使用说明，包括如何构建、运行和测试项目。
 
+```
+   make new PROJECT=new_project_name # 创建一个包含模板文件的 C 项目
+   make build                        # 编译项目
+   make run                          # 编译并运行项目
+   make build_test                   # 编译测试套件
+   make test                         # 运行测试
+   make clean                        # 清理生成的文件
+   make check                        # 只检查语法
+   make debug                        # 调试项目
+```
+
 ## 许可证
 
 该模板项目基于 MIT 许可证。详情请参阅 `LICENSE` 文件。

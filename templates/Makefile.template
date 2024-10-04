@@ -20,13 +20,11 @@ ifeq ($(UNAME_S), Darwin)
     CFLAGS = -Wall -Wextra -O2 -I/opt/homebrew/include -Iinclude
     LDFLAGS = -L/opt/homebrew/lib -lcunit
     DEBUGGER = lldb  # macOS 使用 lldb
-    $(info Detected macOS, using Homebrew paths for CUnit.)
 else ifeq ($(UNAME_S), Linux)
     # Linux 用户
     CFLAGS = -Wall -Wextra -O2 -Iinclude
     LDFLAGS = -lcunit
     DEBUGGER = gdb  # Linux 使用 gdb
-    $(info Detected Linux, using default paths for CUnit.)
 else
     # Windows 用户：建议使用 WSL2
     $(error Unsupported platform detected. Please use WSL2 for Windows.)
@@ -55,6 +53,20 @@ DEBUG_CFLAGS = -Wall -Wextra -g -O0 -Iinclude
 # 创建编译输出目录
 $(OBJ_DIR) $(BIN_DIR):
 	mkdir -p $@
+
+# 默认目标：帮助信息
+.PHONY: help
+help:
+	@echo "Usage:"
+	@echo "  make new PROJECT=new_project_name # 创建一个包含模板文件的 C 项目"
+	@echo "  make build                        # 编译项目"
+	@echo "  make run                          # 编译并运行项目"
+	@echo "  make build_test                   # 编译测试套件"
+	@echo "  make test                         # 运行测试"
+	@echo "  make clean                        # 清理生成的文件"
+	@echo "  make check                        # 只检查语法"
+	@echo "  make debug                        # 调试项目"
+
 
 # 编译源程序
 .PHONY: build
@@ -90,6 +102,13 @@ test: build_test
 	@echo "Running tests..."
 	@./$(TEST_BIN)
 
+# 只检查语法，不生成目标文件，类似 `cargo check`
+.PHONY: check
+check:
+	@echo "Checking syntax..."
+	$(CC) $(CFLAGS) -fsyntax-only $(SRCS)
+	@echo "Syntax check passed!"
+
 # 调试模式：为源程序生成调试符号并使用 gdb 或 lldb
 .PHONY: debug
 debug: $(OBJ_DIR) $(BIN_DIR)
@@ -100,3 +119,6 @@ debug: $(OBJ_DIR) $(BIN_DIR)
 .PHONY: clean
 clean:
 	rm -rf $(OBJ_DIR) $(BIN_DIR)
+
+
+# make doc later
