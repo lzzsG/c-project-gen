@@ -1,0 +1,35 @@
+#include <CUnit/CUnit.h>
+#include <CUnit/Basic.h>
+
+/* 添加测试函数声明 */
+%TEST_FUNCTION_DECLARATIONS%
+
+/* 初始化测试套件 */
+int init_suite(void) { return 0; }
+
+/* 清理测试套件 */
+int clean_suite(void) { return 0; }
+
+int main() {
+    /* 初始化注册表 */
+    if (CU_initialize_registry() != CUE_SUCCESS)
+        return CU_get_error();
+
+    /* 添加一个测试套件 */
+    CU_pSuite pSuite = CU_add_suite("Test_Suite", init_suite, clean_suite);
+    if (NULL == pSuite) {
+        CU_cleanup_registry();
+        return CU_get_error();
+    }
+
+    /* 注册测试函数 */
+    %ADD_TEST_FUNCTIONS%
+
+    /* 设置模式并运行测试 */
+    CU_basic_set_mode(CU_BRM_VERBOSE);
+    CU_basic_run_tests();
+
+    /* 清理注册表 */
+    CU_cleanup_registry();
+    return CU_get_error();
+}

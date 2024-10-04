@@ -1,0 +1,92 @@
+# 通用 Makefile
+
+# 默认编译器和编译选项
+CC = gcc
+CFLAGS = -Wall -Wextra -O2
+
+# 项目信息
+TARGET = $(notdir $(CURDIR))  # 项目名默认为当前目录名
+SRC_DIR = src
+OBJ_DIR = obj
+BIN_DIR = bin
+INCLUDE_DIR = include
+TEST_DIR = tests
+
+# 查找源代码和对象文件
+SRCS := $(wildcard $(SRC_DIR)/*.c)
+OBJS := $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
+
+# 测试源文件
+TEST_SRCS := $(wildcard $(TEST_DIR)/*.c)
+TEST_OBJS := $(patsubst $(TEST_DIR)/%.c, $(OBJ_DIR)/%.o, $(TEST_SRCS))
+TEST_BIN = $(BIN_DIR)/test_suite
+
+# 用户的测试函数文件，自动从模板生成
+USER_TEST_FUNCTIONS := $(TEST_DIR)/user_test_functions.h
+USER_TEST_FUNCTIONS_TEMPLATE := $(TEST_DIR)/user_test_functions.h.template
+
+# 模板文件
+TEST_TEMPLATE := $(TEST_DIR)/test_template.c.template
+TEST_OUTPUT := $(TEST_DIR)/test_fibonacci.c
+
+# 默认目标：编译并链接程序
+.PHONY: build
+build: $(BIN_DIR)/$(TARGET)
+
+# 编译并运行程序，类似于 `cargo run`
+.PHONY: run
+run: build
+	@./$(BIN_DIR)/$(TARGET)
+
+# 编译并链接生成可执行文件
+$(BIN_DIR)/$(TARGET): $(OBJS) | $(BIN_DIR)
+	$(CC) $(CFLAGS) $(OBJS) -o $@ $(LDLIBS)
+
+# 编译每个 .c 文件为 .o 文件
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+	$(CC) $(CFLAGS) -I$(INCLUDE_DIR) -c $< -o $@
+
+# 生成用户测试函数文件
+$(USER_TEST_FUNCTIONS): $(USER_TEST_FUNCTIONS_TEMPLATE)
+	@echo "Generating user test functions from template..."
+	@cp $(USER_TEST_FUNCTIONS_TEMPLATE) $(USER_TEST_FUNCTIONS)
+
+# 生成测试文件并编译测试
+$(TEST_OUTPUT): $(TEST_TEMPLATE) $(USER_TEST_FUNCTIONS)
+	@echo "Generating test file from template..."
+	@sed -e '/%TEST_FUNCTION_DECLARATIONS%/r $(USER_TEST_FUNCTIONS)' \
+	    -e '/%TEST_FUNCTION_DECLARATIONS%/d' \
+	    -e 's/%ADD_TEST_FUNCTIONS%/CU_add_test(pSuite, "test of hello_world", test_hello_world);/' \
+	    $(TEST_TEMPLATE) > $(TEST_OUTPUT)
+
+# 测试目标：编译并运行测试
+.PHONY: test
+test: $(TEST_BIN)
+	@echo "Running tests..."
+	@./$(TEST_BIN)
+
+# 编译测试程序
+$(TEST_BIN): $(OBJS) $(TEST_OUTPUT:.c=.o) | $(BIN_DIR)
+	$(CC) $(CFLAGS) $(OBJS) $(TEST_OUTPUT:.c=.o) -o $@ -lcunit
+
+# 清理生成的文件
+.PHONY: clean
+clean:
+	rm -rf $(OBJ_DIR) $(BIN_DIR) $(TEST_OUTPUT:.c=.o) $(TEST_OUTPUT) $(USER_TEST_FUNCTIONS)
+
+# 只检查语法，不生成目标文件，类似 `cargo check`
+.PHONY: check
+check:
+	@echo "Checking syntax..."
+	$(CC) $(CFLAGS) -fsyntax-only $(SRCS)
+	@echo "Syntax check passed!"
+
+# 调试模式（不优化，包含调试信息）
+.PHONY: debug
+debug: CFLAGS += -g
+debug: build
+
+# 发布模式（优化编译）
+.PHONY: release
+release: CFLAGS += -O3
+release: build
