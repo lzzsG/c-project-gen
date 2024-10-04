@@ -1,4 +1,5 @@
 # C 项目模板（带单元测试）
+
 [English](# C Project Template with Unit Testing)
 
 这是一个 C 项目模板，旨在简化设置、编译和使用 **CUnit** 进行单元测试。该项目根据不同平台（macOS 和 Linux）进行自动配置，支持平台特定的编译器和调试工具。
@@ -147,13 +148,12 @@ make debug
 
 ---
 
-
-
 # C Project Template with Unit Testing
 
 This is a C project template designed for easy setup, compilation, and unit testing using **CUnit**. The project is automatically configured for use on both macOS and Linux, with platform-specific adjustments for compilers and debugging tools.
 
 ## Table of Contents
+
 - [Project Structure](#project-structure)
 - [Features](#features)
 - [Prerequisites](#prerequisites)
@@ -184,12 +184,15 @@ my_project/
 ```
 
 ## Features
+
 - **Cross-platform support**: Automatically adjusts for macOS (using `lldb`) and Linux (using `gdb`) for debugging.
 - **Unit Testing**: Uses the **CUnit** testing framework, with test examples provided for easy extension.
 - **Makefile automation**: A fully-featured `Makefile` handles building, testing, and debugging tasks.
 
 ## Prerequisites
+
 To get started, you need to install the following tools:
+
 - **CUnit**:
   - macOS: `brew install cunit`
   - Linux: `sudo apt install libcunit1-dev`
@@ -203,34 +206,45 @@ To get started, you need to install the following tools:
 The project comes with a `Makefile` that automates the build, test, and debugging processes. Below are the commands to perform various actions.
 
 ### Build Main Program
+
 To build the main program, use the following command:
+
 ```bash
 make build
 ```
+
 This will compile the source files in the `src/` directory and place the resulting binary in the `bin/` directory.
 
 ### Run Main Program
+
 After building, you can run the main program using:
+
 ```bash
 make run
 ```
 
 ### Build and Run Tests
+
 This project uses **CUnit** for unit testing. To build and run the tests:
+
 ```bash
 make build_test   # Build the test suite
 make test         # Run the tests
 ```
 
 ### Debugging
+
 The project supports debugging with both `gdb` (for Linux) and `lldb` (for macOS). You can initiate debugging by running:
+
 ```bash
 make debug
 ```
+
 - **macOS**: The project uses `lldb` for debugging.
 - **Linux**: The project uses `gdb` for debugging.
 
 Once inside the debugger, you can set breakpoints, run the program, and step through the code:
+
 ```bash
 (lldb) b main       # Set a breakpoint at the main function
 (lldb) run          # Run the program
@@ -253,10 +267,13 @@ Once inside the debugger, you can set breakpoints, run the program, and step thr
 
 1. **Create Test Functions**:
    - In `tests/test.c`, include the header for the function you want to test:
+
      ```c
      #include "../include/foo.h"
      ```
+
    - Write the test cases using the **CUnit** framework:
+
      ```c
      void test_foo(void) {
          CU_ASSERT(foo(1) == expected_value);
@@ -265,6 +282,7 @@ Once inside the debugger, you can set breakpoints, run the program, and step thr
 
 2. **Register the Test Function**:
    - Register your test function in `main()`:
+
      ```c
      CU_add_test(pSuite, "test_foo", test_foo);
      ```
