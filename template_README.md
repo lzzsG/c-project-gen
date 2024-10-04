@@ -1,6 +1,6 @@
 # C 项目模板（带单元测试）
 
-[English](# C Project Template with Unit Testing)
+[English](#c-project-template-with-unit-testing)
 
 这是一个 C 项目模板，旨在简化设置、编译和使用 **CUnit** 进行单元测试。该项目根据不同平台（macOS 和 Linux）进行自动配置，支持平台特定的编译器和调试工具。
 
