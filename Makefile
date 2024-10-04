@@ -23,8 +23,11 @@ new:
 	@cp templates/Makefile.template $(PROJECT)/Makefile
 	@cp templates/main.c.template $(PROJECT)/src/main.c
 	@cp templates/README.md.template $(PROJECT)/README.md
-	@cp templates/run_tests.sh.template $(PROJECT)/tests/run_tests.sh
-	@chmod +x $(PROJECT)/tests/run_tests.sh
+	@cp templates/user_test_functions.h.template $(PROJECT)/tests/user_test_functions.h
+	@cp templates/test_template.c.template $(PROJECT)/tests/test_fibonacci.c
+	@echo "Creating .gitignore"
+	@cp templates/gitignore.template $(PROJECT)/.gitignore
+	@cd $(PROJECT) && git init
 	@echo "Project $(PROJECT) created successfully."
 
 # 模板Makefile生成
@@ -43,4 +46,5 @@ Makefile.template:
 	@echo '$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c' >> Makefile.template
 	@echo '	$(CC) $(CFLAGS) -c $< -o $@' >> Makefile.template
 	@echo "clean:" >> Makefile.template
-	@echo "	rm -rf $(OBJ_DIR) $(BIN_DIR)" >> Makefile.template
+	@echo "	rm -rf $(OBJ_DIR) $(BIN_DIR)"
+

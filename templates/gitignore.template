@@ -1,0 +1,32 @@
+# MacOS
+.DS_Store
+
+# 编译文件
+/bin
+/obj
+*.o
+*.out
+*.exe
+
+# CTags
+tags
+
+# Vim 临时文件
+*.swp
+
+# 生成的测试报告
+test-results/
+
+# 操作系统相关
+Thumbs.db
+Desktop.ini
+
+# 日志文件
+*.log
+
+# 忽略构建系统临时文件
+*.dSYM
+*.tmp
+
+# 忽略所有隐藏文件
+.*
