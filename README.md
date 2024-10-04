@@ -1,5 +1,4 @@
-# c-project-gen 
-# C 项目模板生成器
+# c-project-gen C 项目模板生成器
 
 [English](#c-project-template-generator)
 
