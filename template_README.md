@@ -2,7 +2,7 @@
 
 [English](#c-project-template-with-unit-testing)
 
-这是一个 C 项目模板，旨在简化设置、编译和使用 **CUnit** 进行单元测试。该项目根据不同平台（macOS 和 Linux）进行自动配置，支持平台特定的编译器和调试工具。
+这是一个 C 项目模板，旨在简化设置、编译和使用 **Criterion** 进行单元测试。该项目根据不同平台（macOS 和 Linux）进行自动配置，支持平台特定的编译器和调试工具。
 
 ## 目录
 
@@ -47,9 +47,9 @@ my_project/
 
 开始之前，需要安装以下工具：
 
-- **CUnit**:
-  - macOS: `brew install cunit`
-  - Linux: `sudo apt install libcunit1-dev`
+- **Criterion**:
+  - macOS: `brew install criterion`
+  - Linux: `sudo apt install criterion`
 - **gcc**（大多数 Linux 系统预装，macOS 可通过 Xcode 安装）。
 - **gdb** 或 **lldb**:
   - macOS: 系统自带 `lldb`。
@@ -95,11 +95,12 @@ make check
 
 ### 构建并运行测试
 
-该项目使用 **CUnit** 进行单元测试。要构建并运行测试：
+该项目使用 **Criterion** 进行单元测试。要构建并运行测试：
 
 ```bash
 make build_test   # 构建测试套件
 make test         # 运行测试
+make test VB=1    # 启用 verbose 模式运行测试
 ```
 
 ### 调试
@@ -143,7 +144,7 @@ make clean
 2. **编辑 `Makefile`**：
    - `Makefile` 会自动检测 `src/` 目录中的新 `.c` 文件，无需手动编辑。
 
-## 添加新测试
+## 添加测试
 
 1. **创建测试函数**：
 
@@ -153,25 +154,27 @@ make clean
      #include "../include/foo.h"
      ```
 
-   - 使用 **CUnit** 框架编写测试用例：
+   - 使用 **Criterion** 框架编写测试用例：
 
      ```c
-     void test_foo(void) {
-         CU_ASSERT(foo(1) == expected_value);
+     Test(FooSuite, test_foo) {
+         cr_assert_eq(foo(1), expected_value, "Expected: %d, but got: %d", expected_value, foo(1));
      }
      ```
 
-2. **注册测试函数**：
+2. **运行测试**：
 
-   - 在 `main()` 中注册测试函数：
+   - 使用 `make test` 构建并运行测试套件：
 
-     ```c
-     CU_add_test(pSuite, "test_foo", test_foo);
+     ```bash
+     make test
      ```
 
-3. **运行测试**：
+   - 如果需要详细的测试输出，可以使用以下命令启用 `verbose` 模式：
 
-   - 使用 `make test` 构建并运行测试套件。
+     ```bash
+     make test VB=1
+     ```
 
 ## 完整使用流程
 
@@ -180,7 +183,7 @@ make clean
    - 运行以下命令生成一个新项目：
 
      ```bash
-     make new PROJECT=my_project
+     make new PROJ=my_project
      ```
 
 2. **修改 `main.c` 文件**：
@@ -228,26 +231,27 @@ make clean
 
    - 在 `tests/` 目录中修改或添加测试用例。例如，修改 `test.c` 以测试 Fibonacci 函数：
 
-     ```c
-     #include <CUnit/CUnit.h>
-     #include "../include/fibonacci.h"
-     
-     void test_fibonacci(void) {
-         CU_ASSERT(fibonacci(0) == 0);
-         CU_ASSERT(fibonacci(1) == 1);
-         CU_ASSERT(fibonacci(2) == 1);
-         CU_ASSERT(fibonacci(10) == 55);
-     }
-     
-     int main() {
-         CU_initialize_registry();
-         CU_pSuite suite = CU_add_suite("Fibonacci Test Suite", 0, 0);
-         CU_add_test(suite, "test_fibonacci", test_fibonacci);
-         CU_basic_run_tests();
-         CU_cleanup_registry();
-         return 0;
-     }
-     ```
+    ```c
+    #include <criterion/criterion.h>
+    #include "../include/fibonacci.h" // 包含 Fibonacci 函数的头文件
+    /* 测试 Fibonacci 递归实现 */
+    Test(FibonacciSuite, test_fibonacci_recursive)
+    {
+        cr_assert_eq(fibonacci_recursive(0), 0, "Expected: %d, but got: %d", 0, fibonacci_recursive(0));
+        cr_assert_eq(fibonacci_recursive(1), 1, "Expected: %d, but got: %d", 1, fibonacci_recursive(1));
+        cr_assert_eq(fibonacci_recursive(2), 1, "Expected: %d, but got: %d", 1, fibonacci_recursive(2));
+        cr_assert_eq(fibonacci_recursive(10), 55, "Expected: %d, but got: %d", 55, fibonacci_recursive(10));
+    }
+
+    /*测试 Fibonacci 迭代实现*/
+    Test(FibonacciSuite, test_fibonacci_iterative)
+    {
+        cr_assert_eq(fibonacci_iterative(0), 0, "Expected: %d, but got: %d", 0, fibonacci_iterative(0));
+        cr_assert_eq(fibonacci_iterative(1), 55, "Expected: %d, but got: %d", 55, fibonacci_iterative(1)); // 失败示例
+        cr_assert_eq(fibonacci_iterative(2), 1, "Expected: %d, but got: %d", 1, fibonacci_iterative(2));
+        cr_assert_eq(fibonacci_iterative(10), 55, "Expected: %d, but got: %d", 55, fibonacci_iterative(10));
+    }
+    ```
 
 6. **构建项目**：
 
@@ -296,11 +300,11 @@ make clean
 
 ---
 
-# C Project Template with Unit Testing
+# C Project Template (with Unit Testing)
 
-This is a C project template designed for easy setup, compilation, and unit testing using **CUnit**. The project is automatically configured for use on both macOS
+[中文](#c项目模板带单元测试)
 
- and Linux, with platform-specific adjustments for compilers and debugging tools.
+This is a C project template designed to simplify setup, compilation, and unit testing with **Criterion**. The project automatically configures itself for different platforms (macOS and Linux), supporting platform-specific compilers and debugging tools.
 
 ## Table of Contents
 
@@ -330,46 +334,52 @@ my_project/
 │   ├── fibonacci.c     # Example Fibonacci implementation
 │   └── main.c          # Main entry point
 ├── tests/              # Unit tests (.c)
-│   └── test.c          # Example test suite for Fibonacci
+│   └── test.c          # Example Fibonacci test suite
 ├── Makefile            # Build system
 └── README.md           # Project documentation (this file)
 ```
 
 ## Features
 
-- **Cross-platform support**: Automatically adjusts for macOS (using `lldb`) and Linux (using `gdb`) for debugging.
-- **Unit Testing**: Uses the **CUnit** testing framework, with test examples provided for easy extension.
-- **Makefile automation**: A fully-featured `Makefile` handles building, testing, and debugging tasks.
+- **Cross-platform support**: Automatically adjusts for macOS and Linux platforms, including compiler and debugger support.
+- **Unit Testing**: Includes **Criterion** testing framework with sample tests for easy extension.
+- **Makefile Automation**: The `Makefile` manages compilation, testing, and debugging tasks.
 
 ## Prerequisites
 
-To get started, you need to install the following tools:
+Before starting, you will need to install the following tools:
 
-- **CUnit**:
-  - macOS: `brew install cunit`
-  - Linux: `sudo apt install libcunit1-dev`
-- **gcc** (pre-installed on most Linux systems and available via Xcode on macOS).
+- **Criterion**:
+  - macOS: `brew install criterion`
+  - Linux: `sudo apt install criterion`
+- **gcc** (usually pre-installed on Linux, or available on macOS via Xcode).
 - **gdb** or **lldb**:
-  - macOS: Comes with `lldb` pre-installed.
+  - macOS: Comes with `lldb`.
   - Linux: `sudo apt install gdb`
 
 ## Building the Project
 
-The project comes with a `Makefile` that automates the build, test, and debugging processes. Below are the commands to perform various actions.
+This project includes a `Makefile` to automate the build, test, and debugging processes. Below are the commands for common actions.
+
+View help with the following command:
+
+```bash
+make help
+```
 
 ### Build Main Program
 
-To build the main program, use the following command:
+To build the main program, run:
 
 ```bash
 make build
 ```
 
-This will compile the source files in the `src/` directory and place the resulting binary in the `bin/` directory.
+This will compile the source files in the `src/` directory and place the generated binary in the `bin/` directory.
 
 ### Run Main Program
 
-After building, you can run the main program using:
+Once built, you can run the main program with:
 
 ```bash
 make run
@@ -377,25 +387,26 @@ make run
 
 ### Build and Run Tests
 
-This project uses **CUnit** for unit testing. To build and run the tests:
+This project uses **Criterion** for unit testing. To build and run the tests:
 
 ```bash
 make build_test   # Build the test suite
 make test         # Run the tests
+make test VB=1    # Enable verbose mode for detailed test output
 ```
 
 ### Debugging
 
-The project supports debugging with both `gdb` (for Linux) and `lldb` (for macOS). You can initiate debugging by running:
+This project supports debugging with either `gdb` (on Linux) or `lldb` (on macOS). Start debugging with:
 
 ```bash
 make debug
 ```
 
-- **macOS**: The project uses `lldb` for debugging.
-- **Linux**: The project uses `gdb` for debugging.
+- **macOS**: Uses `lldb` for debugging.
+- **Linux**: Uses `gdb` for debugging.
 
-Once inside the debugger, you can set breakpoints, run the program, and step through the code:
+Inside the debugger, you can set breakpoints, run the program, and step through code:
 
 ```bash
 (lldb) b main       # Set a breakpoint at the main function
@@ -407,171 +418,165 @@ Once inside the debugger, you can set breakpoints, run the program, and step thr
 
 ### Clean the Project
 
-To clean the project by removing all generated binaries and object files, run:
+To clean the project by removing generated binaries and object files, run:
 
 ```bash
 make clean
 ```
 
-This will remove the `bin/` and `obj/` directories, clearing out all compiled files.
+This will delete the `bin/` and `obj/` directories, clearing out all compiled files.
 
 ## Adding New Code
 
 1. **Add Source Files**:
-   - Place your new `.c` files in the `src/` directory.
+   - Place new `.c` files in the `src/` directory.
    - Create corresponding header files in the `include/` directory.
-   - For example, to add a new function `foo`, add `foo.c` to `src/` and `foo.h` to `include/`.
+   - For example, to add a new function `foo`, place `foo.c` in `src/` and `foo.h` in `include/`.
 
 2. **Edit the `Makefile`**:
-   - The `Makefile` will automatically detect new `.c` files in the `src/` directory, so no manual edits are required.
+   - The `Makefile` will automatically detect new `.c` files in the `src/` directory, so no manual edits are needed.
 
 ## Adding New Tests
 
 1. **Create Test Functions**:
 
-   - In `tests/test.c`, include the header for the function you want to test:
+   - In `tests/test.c`, include the header file for the function you want to test:
 
      ```c
      #include "../include/foo.h"
      ```
 
-   - Write the test cases using the **CUnit** framework:
+   - Write the test case using the **Criterion** framework:
 
      ```c
-     void test_foo(void) {
-         CU_ASSERT(foo(1) == expected_value);
+     Test(FooSuite, test_foo) {
+         cr_assert_eq(foo(1), expected_value, "Expected: %d, but got: %d", expected_value, foo(1));
      }
      ```
 
-2. **Register the Test Function**:
+2. **Run the Tests**:
 
-   - Register your test function in `main()`:
+   - Use `make test` to build and run the test suite:
 
-     ```c
-     CU_add_test(pSuite, "test_foo", test_foo);
+     ```bash
+     make test
      ```
 
-3. **Run the Tests**:
+   - For more detailed output, enable verbose mode with:
 
-   - Use `make test` to build and run the test suite.
+     ```bash
+     make test VB=1
+     ```
 
 ## Full Usage Workflow
 
 1. **Generate a New Project**:
 
-   - Run the following command to generate a new project:
+   Run the following command to generate a new project:
 
-     ```bash
-     make new PROJECT=my_project
-     ```
+   ```bash
+   make new PROJ=my_project
+   ```
 
 2. **Modify `main.c`**:
 
-   - Modify the `src/main.c` file to implement your desired functionality. For example:
+   Edit `src/main.c` to implement your desired functionality. For example:
 
-     ```c
-     #include <stdio.h>
-     #include "fibonacci.h"  // Include your custom header
+   ```c
+   #include <stdio.h>
+   #include "fibonacci.h"  // Include the Fibonacci header
      
-     int main() {
-         int n = 10;
-         printf("Fibonacci(%d) = %d\n", n, fibonacci(n));
-         return 0;
-     }
-     ```
+   int main() {
+       int n = 10;
+       printf("Fibonacci(%d) = %d\n", n, fibonacci(n));
+       return 0;
+   }
+   ```
 
 3. **Add/Edit Header Files**:
 
-   - Add or modify header files in the `include/` directory. For instance, modify `fibonacci.h`:
+   Edit or add new header files in the `include/` directory. For example, modify `fibonacci.h`:
 
-     ```c
-     #ifndef FIBONACCI_H
-     #define FIBONACCI_H
-     
-     int fibonacci(int n);
-     
-     #endif
-     ```
+   ```c
+   #ifndef FIBONACCI_H
+   #define FIBONACCI_H
+   
+   int fibonacci(int n);
+   
+   #endif
+   ```
 
 4. **Implement the Function**:
 
-   - Implement the function in `src/`, such as in `fibonacci.c`:
+   Implement the function in the `src/` directory, for example, in `fibonacci.c`:
 
-     ```c
-     #include "fibonacci.h"
-     
-     int fibonacci(int n) {
-         if (n <= 1) return n;
-         return fibonacci(n - 1) + fibonacci(n - 2);
-     }
-     ```
+   ```c
+   #include "fibonacci.h"
+   
+   int fibonacci(int n) {
+       if (n <= 1) return n;
+       return fibonacci(n - 1) + fibonacci(n - 2);
+   }
+   ```
 
 5. **Write Test Cases**:
 
-   - Modify or add test cases in `tests/test.c`. For instance, to test the Fibonacci function:
+   In the `tests/` directory, add or modify test cases to test the Fibonacci function:
 
-     ```c
-     #include <CUnit/CUnit.h>
-     #include "../include/fibonacci.h"
-     
-     void test_fibonacci(void) {
-         CU_ASSERT(fibonacci(0) == 0);
-         CU_ASSERT(fibonacci(1) == 1);
-         CU_ASSERT(fibonacci(2) == 1);
-         CU_ASSERT(fibonacci(10) == 55);
-     }
-     
-     int main() {
-         CU_initialize_registry();
-         CU_pSuite suite = CU_add_suite("Fibonacci Test Suite", 0, 0);
-         CU_add_test(suite, "test_fibonacci", test_fibonacci);
-         CU_basic_run_tests();
-         CU_cleanup_registry();
-         return 0;
-     }
-     ```
+   ```c
+   #include <criterion/criterion.h>
+   #include "../include/fibonacci.h"
+   
+   /* Test Fibonacci Recursive */
+   Test(FibonacciSuite, test_fibonacci_recursive) {
+       cr_assert_eq(fibonacci_recursive(0), 0, "Expected: %d, but got: %d", 0, fibonacci_recursive(0));
+       cr_assert_eq(fibonacci_recursive(1), 1, "Expected: %d, but got: %d", 1, fibonacci_recursive(1));
+       cr_assert_eq(fibonacci_recursive(2), 1, "Expected: %d, but got: %d", 1, fibonacci_recursive(2));
+       cr_assert_eq(fibonacci_recursive(10), 55, "Expected: %d, but got: %d", 55, fibonacci_recursive(10));
+   }
+   ```
 
 6. **Build the Project**:
 
-   - Use `make build` to compile the project:
+   Use `make build` to compile the project:
 
-     ```bash
-     make build
-     ```
+   ```bash
+   make build
+   ```
 
 7. **Run the Program**:
 
-   - Once built, use `make run` to run the program:
+   Once built, use `make run` to run the program:
 
-     ```bash
-     make run
-     ```
+   ```bash
+   make run
+   ```
 
 8. **Build and Run Tests**:
 
-   - Use the following commands to build and run tests:
+   Use the following commands to build and run the tests:
 
-     ```bash
-     make build_test
-     make test
-     ```
+   ```bash
+   make build_test
+   make test
+   ```
 
-9. **Debug the Program**:
+9. **Debug the Project**:
 
-   - To debug the program, use the following command to launch the debugger:
+   Enter debugging mode with the following command:
 
-     ```bash
-     make debug
-     ```
+   ```bash
+   make debug
+   ```
 
 10. **Clean the Project**:
 
-    - To clean up generated files and directories, use:
+    Clean the generated files and directories with:
 
-      ```bash
-      make clean
-      ```
+    ```bash
+    make clean
+    ```
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. For more information, see the [LICENSE](LICENSE) file.
